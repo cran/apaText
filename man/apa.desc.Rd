@@ -2,41 +2,59 @@
 % Please edit documentation in R/apa_descriptive_statistics.R
 \name{apa.desc}
 \alias{apa.desc}
-\title{Creates Mean (M) and Standard Deviation (SD) output with confidence interval in APA style using Markdown.}
+\title{Report descriptive statistics for a set of values}
 \usage{
-apa.desc(data = NULL, ..., dv = NULL, show.conf.interval = NULL,
-  show.N = NULL)
+apa.desc(
+  .data,
+  .dv = NULL,
+  show.mean = NULL,
+  show.sd = NULL,
+  show.se = NULL,
+  show.conf.interval = NULL,
+  show.N = NULL,
+  number.decimals = NULL
+)
 }
 \arguments{
-\item{data}{Project data frame name}
+\item{.data}{A data frame or data frame extension (e.g., tibble)}
 
-\item{...}{Tidyverse selection of rows}
+\item{.dv}{Name of the dependent variable column}
 
-\item{dv}{Name of the dependent variable column}
+\item{show.mean}{Show mean (Bool. Default TRUE)}
 
-\item{show.conf.interval}{Show confidence interval (default behavior is TRUE)}
+\item{show.sd}{Show standard deviation (Bool. Default TRUE)}
 
-\item{show.N}{Show confidence interval (default behavior is TRUE)}
+\item{show.se}{Show standard error (Bool. Default FALSE)}
+
+\item{show.conf.interval}{Show confidence interval (Bool. Default TRUE)}
+
+\item{show.N}{Show number of cases (Bool. Default TRUE)}
+
+\item{number.decimals}{Number of decimals in output}
 }
 \value{
-Descriptive statistics (M and SD) in APA style using Markdown
+R Markdown text
 }
 \description{
-Creates Mean (M) and Standard Deviation (SD) output with confidence interval in APA style using Markdown.
+Report descriptive statistics for a set of values
 }
 \examples{
-#2-way ANOVA Example
-library(apaTables) #load apaTables to access goggles
+# 2-way ANOVA Example
+if  (requireNamespace("apaTables", quietly = TRUE)){
+    library(dplyr)
+    goggles <- apaTables::goggles
 
-#Main Effect Means: Gender
-apa.desc(goggles, gender=="Female", dv = attractiveness)
-apa.desc(goggles, gender=="Male", dv = attractiveness)
+    #Main Effect Means: Gender
+    goggles \%>\% filter(gender == "Female") \%>\% apa.desc(attractiveness)
+    goggles \%>\% filter(gender == "Male") \%>\% apa.desc(attractiveness)
 
-#Main Effect Means: Alcohol
-apa.desc(goggles, alcohol=="None", dv = attractiveness)
-apa.desc(goggles, alcohol=="2 Pints", dv = attractiveness)
-apa.desc(goggles, alcohol=="4 Pints", dv = attractiveness)
+    # Main Effect Means: Alcohol
+    goggles \%>\% filter(alcohol == "None") \%>\% apa.desc(attractiveness)
+    goggles \%>\% filter(alcohol == "2 Pints") \%>\% apa.desc(attractiveness)
+    goggles \%>\% filter(alcohol == "4 Pints") \%>\% apa.desc(attractiveness)
 
-#Cell Mean: Female, 2 Pints
-apa.desc(goggles, alcohol=="2 Pints", gender=="Female", dv = attractiveness)
+    # Single Cell Mean
+    goggles \%>\% filter(alcohol == "4 Pints", gender == "Female") \%>\%
+                apa.desc(attractiveness)
+}
 }
